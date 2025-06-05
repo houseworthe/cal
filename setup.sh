@@ -18,7 +18,7 @@ fi
 # Backend setup
 echo ""
 echo "📦 Setting up backend..."
-cd cal-backend
+cd backend
 
 # Create virtual environment
 echo "Creating Python virtual environment..."
@@ -32,10 +32,10 @@ pip install -r requirements.txt
 # Check for .env file
 if [ ! -f .env ]; then
     echo ""
-    echo "⚠️  No .env file found in cal-backend/"
+    echo "⚠️  No .env file found in backend/"
     echo "Creating .env file from template..."
     cp .env.example .env
-    echo "Please edit cal-backend/.env and add your ANTHROPIC_API_KEY"
+    echo "Please edit backend/.env and add your ANTHROPIC_API_KEY"
 fi
 
 deactivate
@@ -55,6 +55,6 @@ echo ""
 echo "✅ Setup complete!"
 echo ""
 echo "Next steps:"
-echo "1. Add your Anthropic API key to cal-backend/.env"
+echo "1. Add your Anthropic API key to backend/.env"
 echo "2. Run './run-dev.sh' to start the development servers"
-echo "3. Open http://localhost:3000 in your browser"
+echo "3. Open http://localhost:5173 in your browser"

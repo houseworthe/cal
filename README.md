@@ -19,24 +19,29 @@
 
 ```
 cal/
-├── cal-backend/                # FastAPI backend
-│   ├── main.py                 # FastAPI entrypoint
-│   ├── api/log.py             # Route for logging user input
+├── backend/                   # FastAPI backend
+│   ├── main.py                # FastAPI entrypoint
+│   ├── api/log.py            # Route for logging user input
 │   ├── services/
-│   │   ├── claude_service.py  # Handles Claude API call and prompt
-│   │   └── log_writer.py      # Saves structured data to CSV
-│   ├── data/logs.csv          # Local meal/mood logs
-│   ├── prompt_template.txt    # Prompt used for Claude structuring
-│   ├── .env                   # Claude API key
-│   └── requirements.txt       # Python dependencies
-├── frontend/                  # React frontend
+│   │   ├── claude_service.py # Handles Claude API call and prompt
+│   │   ├── log_writer.py     # Saves structured data to CSV
+│   │   └── daily_logs_manager.py # Manages daily log files
+│   ├── data/                 # Local meal/mood logs directory
+│   ├── prompt_template.txt   # Prompt used for Claude structuring
+│   ├── prompt_schema.json    # JSON schema for structured data
+│   ├── .env                  # Claude API key
+│   └── requirements.txt      # Python dependencies
+├── frontend/                 # React frontend
 │   ├── src/
-│   │   ├── App.jsx           # Main React component
-│   │   └── components/       # UI components
-│   ├── package.json          # Frontend dependencies
-│   └── vite.config.js        # Vite configuration
-├── setup.sh                  # One-time setup script
-├── run-dev.sh               # Start both servers
+│   │   ├── App.jsx          # Main React component
+│   │   ├── components/      # UI components
+│   │   ├── pages/           # Page components
+│   │   └── hooks/           # Custom React hooks
+│   ├── package.json         # Frontend dependencies
+│   └── vite.config.js       # Vite configuration
+├── setup.sh                 # One-time setup script
+├── run-dev.sh              # Start both servers
+├── run.sh                  # Start backend only
 └── README.md
 ```
 
@@ -47,7 +52,7 @@ cal/
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/cal.git
+git clone https://github.com/ethanhouseworth/cal.git
 cd cal
 ```
 
@@ -65,7 +70,7 @@ This will:
 
 ### 3. Add your Claude API key
 
-Edit `cal-backend/.env`:
+Edit `backend/.env`:
 
 ```bash
 ANTHROPIC_API_KEY=your-api-key-here
@@ -79,13 +84,13 @@ ANTHROPIC_API_KEY=your-api-key-here
 
 This launches:
 - Backend API at `http://localhost:8000`
-- Frontend UI at `http://localhost:3000` (opens automatically)
+- Frontend UI at `http://localhost:5173` (Vite dev server)
 
 ---
 
 ## ✍️ Usage
 
-1. Open `http://localhost:3000` in your browser
+1. Open `http://localhost:5173` in your browser
 
 2. Type your daily log in natural language:
    ```

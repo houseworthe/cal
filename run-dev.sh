@@ -13,7 +13,7 @@ cd ..
 sleep 2
 
 # Start frontend
-echo "Starting frontend server on http://localhost:3000"
+echo "Starting frontend server on http://localhost:5173"
 cd frontend
 npm run dev &
 FRONTEND_PID=$!
@@ -21,7 +21,7 @@ cd ..
 
 echo ""
 echo "🚀 Cal is running!"
-echo "Frontend: http://localhost:3000"
+echo "Frontend: http://localhost:5173"
 echo "Backend API: http://localhost:8000"
 echo ""
 echo "Press Ctrl+C to stop all servers"
