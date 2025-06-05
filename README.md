@@ -1,13 +1,13 @@
 # 🥗 Cal – AI-Powered Local Nutrition Tracker
 
-**Cal** is a lightweight, local-first nutrition and wellness logger that lets you record meals, mood, and daily health notes in natural language. It uses Claude 4 Opus to extract structured insights and saves them to a local CSV file — no cloud, no clutter.
+**Cal** is a lightweight, local-first nutrition and wellness logger that lets you record meals, mood, and daily health notes in natural language. It uses Claude 3.5 Sonnet to extract structured insights and saves them to a local CSV file — no cloud, no clutter.
 
 ---
 
 ## 🚀 Features
 
 - 🧠 **Free-text logging** — just type what you ate and how you feel
-- 📦 **Claude 4 Opus integration** to convert your notes into structured JSON
+- 📦 **Claude 3.5 Sonnet integration** to convert your notes into structured JSON
 - 📊 **CSV data storage** for easy review and export
 - 🔒 **Fully local** — your data stays on your machine
 - ⚙️ Built with **Python, FastAPI, and Claude Code**
@@ -87,7 +87,7 @@ docker-compose up --build
 ```
 
 3. The app will:
-   - Send your input to Claude Opus
+   - Send your input to Claude 3.5 Sonnet
    - Get structured JSON in return
    - Save that data as a new row in `logs.csv`
 
@@ -133,7 +133,7 @@ Missing fields are simply omitted.
 
 ## 💡 Inspired By
 
-- Claude 4 Opus
+- Claude 3.5 Sonnet
 - Personal health journaling
 - The idea that logging should feel like texting
 

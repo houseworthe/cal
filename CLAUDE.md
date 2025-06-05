@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Cal is a local-first nutrition and wellness tracker that uses Claude 4 Opus to convert natural language meal/mood logs into structured JSON data stored in CSV format.
+Cal is a local-first nutrition and wellness tracker that uses Claude 3.5 Sonnet to convert natural language meal/mood logs into structured JSON data stored in CSV format.
 
 ## Development Setup
 
@@ -22,6 +22,10 @@ backend/
 ├── .env                   # Claude API key
 └── requirements.txt       # Python dependencies
 ```
+
+- `prompt_template.txt` contains the base Claude prompt with placeholders
+- `prompt_schema.json` defines the expected JSON structure
+- The backend injects the schema and user input into the template before making the API call
 
 ### Environment Setup
 1. Create `.env` file in `/backend` with: `ANTHROPIC_API_KEY=your-api-key-here`
@@ -49,6 +53,11 @@ The Claude prompt expects these JSON fields:
 - `sleep`
 - `activity`
 - `notes`
+
+⚠️ Claude must return **only** a JSON object matching this structure.  
+If a field is not mentioned by the user, omit it entirely.  
+Do not include any explanations, comments, or markdown formatting.
+
 
 ## Current Project Status
 
