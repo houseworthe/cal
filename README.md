@@ -1,5 +1,7 @@
 # 🥗 Cal – AI-Powered Local Nutrition Tracker
 
+![Cal MVP UI](frontend/public/MVP-UI.png)
+
 **Cal** is a lightweight, local-first nutrition and wellness logger that lets you record meals, mood, and daily health notes in natural language. It uses Claude 3.5 Sonnet to extract structured insights and saves them to a local CSV file — no cloud, no clutter.
 
 ---
