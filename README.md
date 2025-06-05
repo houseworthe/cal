@@ -1,19 +1,19 @@
-# 🥗 Cal – AI-Powered Local Nutrition Tracker
+# 🤖 Cal – Your AI Wellness Agent
 
 ![Cal MVP UI](frontend/public/MVP-UI.png)
 
-**Cal** is a lightweight, local-first nutrition and wellness logger that lets you record meals, mood, and daily health notes in natural language. It uses Claude 3.5 Sonnet to extract structured insights and saves them to a local CSV file — no cloud, no clutter.
+**Cal** is your personal AI wellness agent — a lightweight, local-first nutrition and wellness tracker that understands natural language. Powered by Claude 3.5 Sonnet, Cal intelligently converts your meal descriptions, mood notes, and daily health observations into structured insights, all stored locally on your machine.
 
 ---
 
 ## 🚀 Features
 
-- 🧠 **Free-text logging** — just type what you ate and how you feel
-- 📦 **Claude 3.5 Sonnet integration** to convert your notes into structured JSON
-- 📊 **CSV data storage** for easy review and export
-- 🔒 **Fully local** — your data stays on your machine
-- ⚡ **Modern React UI** with real-time updates
-- ⚙️ Built with **Python, FastAPI, React, and Vite**
+- 🧠 **AI-powered natural language processing** — just describe what you ate and how you feel
+- 🤖 **Intelligent data extraction** via Claude 3.5 Sonnet to structure your wellness notes
+- 📊 **Local CSV storage** for complete data ownership and easy export
+- 🔒 **Privacy-first** — your wellness data never leaves your machine
+- ⚡ **Modern React interface** with real-time AI processing
+- 🎯 **Personalized wellness insights** from your daily logs
 
 ---
 
@@ -100,11 +100,11 @@ This launches:
    Slept 5 hours. Only had one glass of water today.
    ```
 
-3. Click "Log Entry" and Cal will:
-   - Send your input to Claude 3.5 Sonnet
-   - Extract structured data (meals, mood, sleep, etc.)
-   - Save it to your local CSV file
-   - Display it in the table below
+3. Click "Log Entry" and your AI wellness agent will:
+   - Analyze your input using Claude 3.5 Sonnet
+   - Intelligently extract structured wellness data (meals, mood, sleep, etc.)
+   - Save insights to your local CSV file
+   - Display personalized wellness tracking in the table below
 
 4. Download your data anytime with the "Download CSV" button
 
@@ -139,11 +139,11 @@ Missing fields are simply omitted.
 
 ## 📌 Roadmap
 
-- [ ] Expand the columns and allow users to select/de-selct them
-- [ ] Add a nutrition analysis on top of the natural language dataset
-- [ ] Show analytics to users
-- [ ] AI-generated suggestions to users
-- [ ] Optional nutrition info lookup
+- [ ] Expand wellness tracking columns with user customization
+- [ ] AI-powered nutrition analysis and recommendations
+- [ ] Personalized wellness analytics and trend insights
+- [ ] Intelligent health suggestions based on your data patterns
+- [ ] Enhanced AI agent capabilities for proactive wellness coaching
 
 ---
 
