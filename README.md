@@ -137,19 +137,15 @@ Missing fields are simply omitted.
 
 ## 📌 Roadmap
 
-- [x] Build a modern React frontend
-- [ ] Add support for hydration reminders
-- [ ] Export data summaries (weekly/monthly)
+- [ ] Expand the columns and allow users to select/de-selct them
+- [ ] Add a nutrition analysis on top of the natural language dataset
+- [ ] Show analytics to users
+- [ ] AI-generated suggestions to users
 - [ ] Optional nutrition info lookup
-- [ ] Desktop app with Tauri/Electron
 
 ---
 
-## 💡 Inspired By
-
-- Claude 3.5 Sonnet
-- Personal health journaling
-- The idea that logging should feel like texting
+## 💡 Built with Claude 4 opus/sonnet in Claude Code
 
 ---
 
