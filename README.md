@@ -10,7 +10,8 @@
 - 📦 **Claude 3.5 Sonnet integration** to convert your notes into structured JSON
 - 📊 **CSV data storage** for easy review and export
 - 🔒 **Fully local** — your data stays on your machine
-- ⚙️ Built with **Python, FastAPI, and Claude Code**
+- ⚡ **Modern React UI** with real-time updates
+- ⚙️ Built with **Python, FastAPI, React, and Vite**
 
 ---
 
@@ -18,7 +19,7 @@
 
 ```
 cal/
-├── backend/
+├── cal-backend/                # FastAPI backend
 │   ├── main.py                 # FastAPI entrypoint
 │   ├── api/log.py             # Route for logging user input
 │   ├── services/
@@ -28,7 +29,14 @@ cal/
 │   ├── prompt_template.txt    # Prompt used for Claude structuring
 │   ├── .env                   # Claude API key
 │   └── requirements.txt       # Python dependencies
-├── run.sh                     # One-liner to launch dev server
+├── frontend/                  # React frontend
+│   ├── src/
+│   │   ├── App.jsx           # Main React component
+│   │   └── components/       # UI components
+│   ├── package.json          # Frontend dependencies
+│   └── vite.config.js        # Vite configuration
+├── setup.sh                  # One-time setup script
+├── run-dev.sh               # Start both servers
 └── README.md
 ```
 
@@ -43,55 +51,55 @@ git clone https://github.com/YOUR_USERNAME/cal.git
 cd cal
 ```
 
-### 2. Add your Claude API key
+### 2. Run the setup script
 
-Create a `.env` file inside `/backend`:
+```bash
+./setup.sh
+```
+
+This will:
+- Create a Python virtual environment
+- Install backend dependencies
+- Install frontend dependencies
+- Create a `.env` file from the template
+
+### 3. Add your Claude API key
+
+Edit `cal-backend/.env`:
 
 ```bash
 ANTHROPIC_API_KEY=your-api-key-here
 ```
 
-### 3. Set up dependencies
-
-If you're using Python UV:
+### 4. Start the app
 
 ```bash
-cd backend
-uv pip install -r requirements.txt
+./run-dev.sh
 ```
 
-Or use Docker:
-
-```bash
-docker-compose up --build
-```
-
-### 4. Run the app
-
-```bash
-./run.sh
-```
+This launches:
+- Backend API at `http://localhost:8000`
+- Frontend UI at `http://localhost:3000` (opens automatically)
 
 ---
 
 ## ✍️ Usage
 
-1. Go to `http://localhost:8000/docs`
+1. Open `http://localhost:3000` in your browser
 
-2. Use the `/log` endpoint to POST your text:
+2. Type your daily log in natural language:
+   ```
+   Had a burrito with black beans for lunch. Feeling sluggish. 
+   Slept 5 hours. Only had one glass of water today.
+   ```
 
-```json
-{
-  "input": "Had a burrito with black beans. Feeling sluggish. Slept 5 hours. Only had one glass of water."
-}
-```
-
-3. The app will:
+3. Click "Log Entry" and Cal will:
    - Send your input to Claude 3.5 Sonnet
-   - Get structured JSON in return
-   - Save that data as a new row in `logs.csv`
+   - Extract structured data (meals, mood, sleep, etc.)
+   - Save it to your local CSV file
+   - Display it in the table below
 
-4. Use the `/view` endpoint to download or preview your data
+4. Download your data anytime with the "Download CSV" button
 
 ---
 
@@ -124,10 +132,11 @@ Missing fields are simply omitted.
 
 ## 📌 Roadmap
 
+- [x] Build a modern React frontend
 - [ ] Add support for hydration reminders
-- [ ] Build a simple web frontend or CLI
 - [ ] Export data summaries (weekly/monthly)
 - [ ] Optional nutrition info lookup
+- [ ] Desktop app with Tauri/Electron
 
 ---
 
