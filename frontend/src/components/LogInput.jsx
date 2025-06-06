@@ -92,7 +92,7 @@ function LogInput({ onSubmit, loading }) {
               onChange={handleInputChange}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
-              placeholder={userHasTyped || input ? "" : typewriter.currentText}
+              placeholder=""
               className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-wellness-400 focus:border-transparent resize-none text-gray-700 placeholder-gray-400 text-lg leading-relaxed"
               style={{ fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
               rows="4"
