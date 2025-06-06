@@ -22,18 +22,10 @@ Instructions:
    - Use mood.morning for morning references ("felt anxious this morning")
    - Use mood.afternoon for afternoon references or as default if no time specified
    - Use mood.night for evening/night references ("relaxed tonight")
-7. For alcohol field:
-   - Return true if any alcoholic drinks are mentioned
-   - Return false if user explicitly says they didn't drink
-   - Return null if not mentioned
-8. For caffeine:
-   - Extract mg amount if specified (e.g., "200mg caffeine" → 200)
-   - Estimate based on drinks: coffee ≈ 95mg, energy drink ≈ 150mg, tea ≈ 50mg
-   - Return null if no caffeine mentioned
-9. For supplements:
+7. For supplements:
    - Split multiple supplements into an array
    - Return empty array [] if none mentioned
-10. Always include the timestamp field with the current ISO timestamp
-11. All wellness data goes inside the "fields" object
+8. Always include the timestamp field with the current ISO timestamp
+9. All wellness data goes inside the "fields" object
 
 Return only the JSON object:
