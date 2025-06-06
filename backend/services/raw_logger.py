@@ -1,6 +1,6 @@
 import csv
 import os
-from datetime import datetime, timezone
+from datetime import datetime
 
 def get_raw_logs_path():
     return "data/logs.csv"
@@ -24,12 +24,12 @@ def save_raw_message(message: str):
     
     fieldnames = ["timestamp", "message"]
     
-    # Generate ISO 8601 timestamp with timezone info
+    # Generate ISO 8601 timestamp in local time
     try:
-        timestamp = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.now().isoformat()
     except Exception as e:
         print(f"Error generating timestamp: {e}")
-        timestamp = datetime.utcnow().isoformat() + "Z"  # Fallback
+        timestamp = datetime.now().isoformat()  # Fallback
     
     file_exists = os.path.exists(logs_path)
     

@@ -33,15 +33,18 @@ function RecentLogs({ recentActivity }) {
     return msgDate === today
   })
 
-  const getMoodEmoji = (mood) => {
-    if (!mood) return '😐'
-    const moodLower = mood.toLowerCase()
-    if (moodLower.includes('happy') || moodLower.includes('great') || moodLower.includes('good')) return '😊'
-    if (moodLower.includes('sad') || moodLower.includes('down')) return '😔'
-    if (moodLower.includes('tired') || moodLower.includes('exhausted')) return '😴'
-    if (moodLower.includes('energetic') || moodLower.includes('excited')) return '⚡'
-    if (moodLower.includes('calm') || moodLower.includes('peaceful')) return '😌'
-    if (moodLower.includes('stressed') || moodLower.includes('anxious')) return '😰'
+  const getMoodEmoji = (moodMorning, moodAfternoon, moodNight) => {
+    // Combine all mood entries to pick best emoji
+    const allMoods = [moodMorning, moodAfternoon, moodNight].filter(Boolean).join(' ').toLowerCase()
+    if (!allMoods) return '😐'
+    
+    if (allMoods.includes('happy') || allMoods.includes('great') || allMoods.includes('good')) return '😊'
+    if (allMoods.includes('sad') || allMoods.includes('down')) return '😔'
+    if (allMoods.includes('tired') || allMoods.includes('exhausted')) return '😴'
+    if (allMoods.includes('energetic') || allMoods.includes('excited')) return '⚡'
+    if (allMoods.includes('calm') || allMoods.includes('peaceful')) return '😌'
+    if (allMoods.includes('stressed') || allMoods.includes('anxious')) return '😰'
+    if (allMoods.includes('fuzzy') || allMoods.includes('foggy')) return '😵‍💫'
     return '😐'
   }
 
@@ -99,8 +102,8 @@ function RecentLogs({ recentActivity }) {
               </div>
               <div className="flex items-center space-x-3">
                 <div className="flex space-x-1">
-                  {today_log?.mood && (
-                    <span className="text-xl">{getMoodEmoji(today_log.mood)}</span>
+                  {(today_log?.mood_morning || today_log?.mood_afternoon || today_log?.mood_night) && (
+                    <span className="text-xl">{getMoodEmoji(today_log.mood_morning, today_log.mood_afternoon, today_log.mood_night)}</span>
                   )}
                   {today_log?.sleep && (
                     <span className="text-lg">{getSleepEmoji(today_log.sleep)}</span>
@@ -142,8 +145,15 @@ function RecentLogs({ recentActivity }) {
                       {today_log.snack_description && (
                         <p><span className="font-medium">🍿 Snacks:</span> {today_log.snack_description}</p>
                       )}
-                      {today_log.mood && (
-                        <p><span className="font-medium">💭 Mood:</span> {today_log.mood}</p>
+                      {(today_log.mood_morning || today_log.mood_afternoon || today_log.mood_night) && (
+                        <div>
+                          <span className="font-medium">💭 Mood:</span>
+                          <div className="ml-4 text-xs">
+                            {today_log.mood_morning && <p>🌅 Morning: {today_log.mood_morning}</p>}
+                            {today_log.mood_afternoon && <p>☀️ Afternoon: {today_log.mood_afternoon}</p>}
+                            {today_log.mood_night && <p>🌙 Night: {today_log.mood_night}</p>}
+                          </div>
+                        </div>
                       )}
                       {today_log.hydration && (
                         <p><span className="font-medium">💧 Hydration:</span> {today_log.hydration}</p>
@@ -154,6 +164,37 @@ function RecentLogs({ recentActivity }) {
                       {today_log.activity && (
                         <p><span className="font-medium">🏃 Activity:</span> {today_log.activity}</p>
                       )}
+                      {today_log.exercise_type && (
+                        <p><span className="font-medium">💪 Exercise:</span> {today_log.exercise_type}</p>
+                      )}
+                      {today_log.caffeine && (
+                        <p><span className="font-medium">☕ Caffeine:</span> {today_log.caffeine}mg</p>
+                      )}
+                      {today_log.alcohol === true && (
+                        <p><span className="font-medium">🍷 Alcohol:</span> Yes</p>
+                      )}
+                      {today_log.alcohol === false && (
+                        <p><span className="font-medium">🚫 Alcohol:</span> No</p>
+                      )}
+                      {today_log.marijuana && (
+                        <p><span className="font-medium">🌿 Cannabis:</span> {today_log.marijuana}</p>
+                      )}
+                      {today_log.supplements && (() => {
+                        try {
+                          const supps = typeof today_log.supplements === 'string' 
+                            ? (today_log.supplements.startsWith('[') 
+                                ? JSON.parse(today_log.supplements) 
+                                : today_log.supplements.split(', '))
+                            : today_log.supplements;
+                          return supps.length > 0 ? (
+                            <p><span className="font-medium">💊 Supplements:</span> {Array.isArray(supps) ? supps.join(', ') : supps}</p>
+                          ) : null;
+                        } catch {
+                          return today_log.supplements ? (
+                            <p><span className="font-medium">💊 Supplements:</span> {today_log.supplements}</p>
+                          ) : null;
+                        }
+                      })()}
                     </div>
                   </div>
                 )}

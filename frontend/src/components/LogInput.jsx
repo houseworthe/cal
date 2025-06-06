@@ -1,9 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Toast from './Toast'
+import useTypewriter from '../hooks/useTypewriter'
 
 function LogInput({ onSubmit, loading }) {
   const [input, setInput] = useState('')
   const [toast, setToast] = useState(null)
+  const [userHasTyped, setUserHasTyped] = useState(false)
+
+  // Example prompts for typewriter animation
+  const examplePrompts = [
+    "Had oatmeal for breakfast, took a walk, feeling calm. Slept well last night.",
+    "Didn't sleep much, feeling foggy. Took 200mg caffeine this morning.",
+    "Feeling great after lifting. 8 hours of sleep. No weed or alcohol today.",
+    "Hung out with friends, had two beers and pizza. Mood was solid all day.",
+    "Had a protein shake and eggs for breakfast. Feeling focused and alert.",
+    "Smoked last night to relax. Slept well but still groggy. Hydrated 32oz so far."
+  ]
+
+  const typewriter = useTypewriter(examplePrompts, {
+    typeSpeed: 60,
+    deleteSpeed: 30,
+    pauseDuration: 2500,
+    loop: true,
+    autoStart: true
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,6 +45,8 @@ function LogInput({ onSubmit, loading }) {
         message: message
       })
       setInput('')
+      setUserHasTyped(false)
+      typewriter.handleUserInputEnd() // Resume animation after submission
       setTimeout(() => setToast(null), 3000)
     } else {
       setToast({
@@ -35,19 +57,56 @@ function LogInput({ onSubmit, loading }) {
     }
   }
 
+  const handleInputChange = (e) => {
+    const value = e.target.value
+    setInput(value)
+    
+    if (value && !userHasTyped) {
+      setUserHasTyped(true)
+      typewriter.handleUserInput()
+    } else if (!value && userHasTyped) {
+      setUserHasTyped(false)
+      typewriter.handleUserInputEnd()
+    }
+  }
+
+  const handleInputFocus = () => {
+    if (!userHasTyped) {
+      typewriter.handleUserInput()
+    }
+  }
+
+  const handleInputBlur = () => {
+    if (!input && !userHasTyped) {
+      typewriter.handleUserInputEnd()
+    }
+  }
+
   return (
     <>
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
+          <div className="relative">
             <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Example: Had oatmeal for breakfast, took a walk, feeling calm. Slept well last night."
+              onChange={handleInputChange}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              placeholder={userHasTyped || input ? "" : typewriter.currentText}
               className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-wellness-400 focus:border-transparent resize-none text-gray-700 placeholder-gray-400 text-lg leading-relaxed"
+              style={{ fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
               rows="4"
               required
             />
+            {!input && !userHasTyped && typewriter.currentText && (
+              <div 
+                className="absolute inset-0 px-4 py-4 pointer-events-none text-gray-400 text-lg leading-relaxed"
+                style={{ fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}
+              >
+                {typewriter.currentText}
+                <span className="animate-pulse">|</span>
+              </div>
+            )}
           </div>
           
           <button

@@ -1,12 +1,24 @@
 {
   "date": "YYYY-MM-DD format",
-  "breakfast_description": "Description of breakfast meal",
-  "lunch_description": "Description of lunch meal",
-  "dinner_description": "Description of dinner meal",
-  "snack_description": "Description of snacks",
-  "mood": "Overall mood for the day",
-  "hydration": "Water intake (e.g., '8 glasses', '2 liters')",
-  "sleep": "Sleep duration and quality",
-  "activity": "Physical activity or exercise",
-  "notes": "Additional notes or observations"
+  "timestamp": "ISO 8601 timestamp",
+  "fields": {
+    "breakfast_description": "Description of breakfast meal",
+    "lunch_description": "Description of lunch meal",
+    "dinner_description": "Description of dinner meal",
+    "snack_description": "Description of snacks",
+    "mood": {
+      "morning": "Morning mood",
+      "afternoon": "Afternoon mood",
+      "night": "Night mood"
+    },
+    "sleep": "Hours slept or sleep description",
+    "hydration": "Water or fluids consumed",
+    "activity": "Physical activity, workouts, steps",
+    "notes": "Freeform user notes or observations",
+    "alcohol": "Boolean - whether alcohol was consumed",
+    "caffeine": "Number - caffeine in mg",
+    "marijuana": "String - use case like 'Relaxation', 'Focus'",
+    "exercise_type": "Type of exercise (e.g. 'Cardio', 'Weights')",
+    "supplements": ["Array of supplements taken"]
+  }
 }
