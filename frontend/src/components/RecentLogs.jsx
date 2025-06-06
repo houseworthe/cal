@@ -242,13 +242,6 @@ function RecentLogs({ recentActivity }) {
         <div className="space-y-4">
           {recent_messages
             .filter(isValidMessage)
-            .filter(msg => {
-              // Exclude today's messages from Recent Messages Feed to avoid duplication
-              const ts = new Date(msg.timestamp)
-              if (isNaN(ts.getTime())) return true
-              const msgDate = ts.toISOString().split('T')[0]
-              return msgDate !== today
-            })
             .slice(-5)
             .reverse()
             .map((msg, index) => {
@@ -257,12 +250,13 @@ function RecentLogs({ recentActivity }) {
               
               const msgDate = formatDate(msg.timestamp)
               const msgTime = formatTime(msg.timestamp)
+              const isToday = ts.toISOString().split('T')[0] === today
               
               return (
                 <div key={index} className="flex items-start space-x-4 p-4 hover:bg-gray-50 rounded-xl transition-colors duration-200">
                   <div className="flex-shrink-0">
                     <div className="text-xs text-gray-500">
-                      {msgDate} {msgTime}
+                      {isToday ? msgTime : `${msgDate} ${msgTime}`}
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
