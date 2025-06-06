@@ -1,20 +1,39 @@
 import { Link, useLocation } from 'react-router-dom'
 
-function Navbar() {
+function Navbar({ activityStreak = 0 }) {
   const location = useLocation()
 
   return (
     <nav className="bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center h-16">
-          {/* Left side - Brand */}
-          <div className="flex flex-col">
-            <Link to="/" className="text-2xl font-bold text-wellness-400 leading-tight">
-              Cal
-            </Link>
-            <span className="text-xs text-gray-400 -mt-1">
-              Your wellness AI agent
-            </span>
+          {/* Left side - Brand and Streak */}
+          <div className="flex items-center space-x-3">
+            <div className="flex flex-col items-center">
+              <Link to="/" className="text-2xl font-bold text-wellness-400 leading-tight">
+                Cal
+              </Link>
+              <span className="text-xs text-gray-400 mt-1">
+                Your wellness AI agent
+              </span>
+            </div>
+            
+            {/* Activity Streak */}
+            {activityStreak > 1 && (
+              <div 
+                className="group relative flex items-center space-x-1 px-3 py-1.5 bg-orange-50 rounded-full border border-orange-200"
+                title={`${activityStreak} day streak!`}
+              >
+                <span className="text-lg">🔥</span>
+                <span className="text-sm font-medium text-orange-700">{activityStreak}</span>
+                
+                {/* Tooltip */}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  {activityStreak} day activity streak! Keep it up!
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Center - Home Icon */}

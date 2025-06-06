@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 from datetime import datetime
 from typing import Dict, Optional
@@ -34,8 +35,9 @@ def save_daily_logs(daily_logs: Dict[str, Dict]):
     
     fieldnames = [
         "date", "breakfast_description", "lunch_description", 
-        "dinner_description", "snack_description", "mood", 
-        "hydration", "sleep", "activity", "notes", "last_updated"
+        "dinner_description", "snack_description", "mood_morning", "mood_afternoon", "mood_night",
+        "hydration", "sleep", "activity", "notes", "alcohol",
+        "caffeine", "marijuana", "exercise_type", "supplements", "last_updated"
     ]
     
     with open(logs_path, "w", newline="", encoding="utf-8") as csvfile:
@@ -58,7 +60,7 @@ def should_append_field(field: str) -> bool:
     ]
     
     # Fields that should overwrite (latest value takes precedence)
-    overwrite_fields = ["sleep", "mood"]
+    overwrite_fields = ["sleep", "mood_morning", "mood_afternoon", "mood_night", "alcohol", "caffeine", "marijuana", "exercise_type"]
     
     return field in append_fields
 
@@ -116,12 +118,15 @@ def merge_daily_entry(parsed_data: Dict, target_date: Optional[str] = None) -> b
     Returns True if data was merged, False if skipped due to ambiguity.
     """
     if target_date is None:
-        target_date = datetime.now().strftime("%Y-%m-%d")
+        # Use the date from parsed data if available, otherwise use today
+        target_date = parsed_data.get("date", datetime.now().strftime("%Y-%m-%d"))
     
     # Check if parsed data contains meaningful wellness information
     meaningful_fields = [
         "breakfast_description", "lunch_description", "dinner_description", 
-        "snack_description", "mood", "hydration", "sleep", "activity", "notes"
+        "snack_description", "mood_morning", "mood_afternoon", "mood_night", 
+        "hydration", "sleep", "activity", "notes",
+        "alcohol", "caffeine", "marijuana", "exercise_type", "supplements"
     ]
     
     has_meaningful_data = any(
@@ -147,9 +152,25 @@ def merge_daily_entry(parsed_data: Dict, target_date: Optional[str] = None) -> b
         if field == "date":
             continue  # Don't overwrite the date key
         
-        if value and str(value).strip():  # Only process non-empty values
+        if value is not None:  # Process all non-None values (including False, 0, [])
             existing_value = existing_entry.get(field, "")
-            merged_value = merge_field_value(existing_value, str(value), field)
+            
+            # Special handling for different field types
+            if field == "supplements" and isinstance(value, list):
+                # Merge supplement arrays
+                existing_supplements = []
+                if existing_value:
+                    try:
+                        existing_supplements = json.loads(existing_value) if existing_value.startswith('[') else existing_value.split(', ')
+                    except:
+                        existing_supplements = existing_value.split(', ') if existing_value else []
+                
+                # Combine and deduplicate
+                combined_supplements = list(set(existing_supplements + value))
+                merged_value = json.dumps(combined_supplements) if combined_supplements else ""
+            else:
+                merged_value = merge_field_value(existing_value, str(value), field)
+            
             updated_entry[field] = merged_value
             
             print(f"Field '{field}': '{existing_value}' + '{value}' = '{merged_value}'")

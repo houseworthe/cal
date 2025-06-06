@@ -9,19 +9,6 @@ Cal is a local-first nutrition and wellness tracker that uses Claude 3.5 Sonnet 
 ## Development Setup
 
 ### Backend Setup
-According to the README, the backend structure should be:
-```
-backend/
-├── main.py                 # FastAPI entrypoint
-├── api/log.py             # Route for logging user input
-├── services/
-│   ├── claude_service.py  # Handles Claude API call and prompt
-│   └── log_writer.py      # Saves structured data to CSV
-├── data/logs.csv          # Local meal/mood logs
-├── prompt_template.txt    # Prompt used for Claude structuring
-├── .env                   # Claude API key
-└── requirements.txt       # Python dependencies
-```
 
 - `prompt_template.txt` contains the base Claude prompt with placeholders
 - `prompt_schema.json` defines the expected JSON structure
@@ -54,7 +41,7 @@ The Claude prompt expects these JSON fields:
 - `activity`
 - `notes`
 
-⚠️ Claude must return **only** a JSON object matching this structure.  
+⚠️ Claude doesn't need to return only a json structure, but we need to pull it out and load it into the csv.  
 If a field is not mentioned by the user, omit it entirely.  
 Do not include any explanations, comments, or markdown formatting.
 

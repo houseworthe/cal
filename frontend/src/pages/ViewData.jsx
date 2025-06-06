@@ -60,53 +60,86 @@ function ViewData({ logs, onDownload }) {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Breakfast</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lunch</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dinner</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Snacks</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mood</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hydration</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sleep</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Meals</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mood</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sleep</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hydration</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alcohol</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Caffeine</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Other</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {[...logs].reverse().map((log, index) => (
-                  <tr key={index} className="hover:bg-gray-50 transition-colors duration-150">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {log.date || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {log.breakfast_description || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {log.lunch_description || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {log.dinner_description || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {log.snack_description || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {log.mood || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {log.hydration || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {log.sleep || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {log.activity || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                      {log.notes || '-'}
-                    </td>
-                  </tr>
-                ))}
+                {[...logs].reverse().map((log, index) => {
+                  // Combine meals into one column
+                  const meals = [
+                    log.breakfast_description && `Breakfast: ${log.breakfast_description}`,
+                    log.lunch_description && `Lunch: ${log.lunch_description}`, 
+                    log.dinner_description && `Dinner: ${log.dinner_description}`,
+                    log.snack_description && `Snacks: ${log.snack_description}`
+                  ].filter(Boolean).join(' • ')
+
+                  // Combine mood times
+                  const moods = [
+                    log.mood_morning && `Morning: ${log.mood_morning}`,
+                    log.mood_afternoon && `Afternoon: ${log.mood_afternoon}`,
+                    log.mood_night && `Night: ${log.mood_night}`
+                  ].filter(Boolean).join(' • ')
+
+                  // Format supplements
+                  const supplements = (() => {
+                    try {
+                      const supps = typeof log.supplements === 'string' 
+                        ? (log.supplements.startsWith('[') ? JSON.parse(log.supplements) : log.supplements.split(', '))
+                        : log.supplements;
+                      return Array.isArray(supps) && supps.length > 0 ? supps.join(', ') : '';
+                    } catch {
+                      return log.supplements || '';
+                    }
+                  })()
+
+                  // Combine other fields
+                  const other = [
+                    log.marijuana && `Cannabis: ${log.marijuana}`,
+                    log.exercise_type && `Exercise: ${log.exercise_type}`,
+                    supplements && `Supplements: ${supplements}`,
+                    log.notes && `Notes: ${log.notes}`
+                  ].filter(Boolean).join(' • ')
+
+                  return (
+                    <tr key={index} className="hover:bg-gray-50 transition-colors duration-150">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {log.date || '-'}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600 max-w-md">
+                        <div className="break-words">{meals || '-'}</div>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600 max-w-xs">
+                        <div className="break-words">{moods || '-'}</div>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {log.sleep || '-'}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {log.hydration || '-'}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {log.activity || '-'}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {log.alcohol === true ? 'Yes' : log.alcohol === false ? 'No' : '-'}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600">
+                        {log.caffeine ? `${log.caffeine}mg` : '-'}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-600 max-w-xs">
+                        <div className="break-words">{other || '-'}</div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

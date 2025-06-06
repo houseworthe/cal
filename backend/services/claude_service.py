@@ -1,7 +1,7 @@
 import os
 import json
 from anthropic import Anthropic
-from datetime import datetime
+from datetime import datetime, timedelta
 
 async def process_user_input(user_input: str) -> tuple[dict, bool]:
     """
@@ -22,7 +22,13 @@ async def process_user_input(user_input: str) -> tuple[dict, bool]:
     
     prompt = prompt_template.replace("{USER_INPUT}", user_input)
     prompt = prompt.replace("{JSON_SCHEMA}", json.dumps(schema, indent=2))
-    prompt = prompt.replace("{CURRENT_DATE}", datetime.now().strftime("%Y-%m-%d"))
+    
+    # Provide current date, yesterday, and timestamp for Claude to use
+    current_date = datetime.now()
+    yesterday_date = current_date - timedelta(days=1)
+    prompt = prompt.replace("{CURRENT_DATE}", current_date.strftime("%Y-%m-%d"))
+    prompt = prompt.replace("{YESTERDAY_DATE}", yesterday_date.strftime("%Y-%m-%d"))
+    prompt = prompt.replace("{CURRENT_TIMESTAMP}", current_date.isoformat())
     
     response = client.messages.create(
         model="claude-3-5-sonnet-20241022",
@@ -38,21 +44,52 @@ async def process_user_input(user_input: str) -> tuple[dict, bool]:
     
     try:
         result = json.loads(response.content[0].text)
+        
+        # Ensure required fields exist
         if "date" not in result:
-            result["date"] = datetime.now().strftime("%Y-%m-%d")
+            result["date"] = current_date.strftime("%Y-%m-%d")
+        if "timestamp" not in result:
+            result["timestamp"] = current_date.isoformat()
+        
+        # Extract fields for backward compatibility and meaningful check
+        fields = result.get("fields", {})
         
         # Check if the result contains meaningful wellness data
         meaningful_fields = [
             "breakfast_description", "lunch_description", "dinner_description", 
-            "snack_description", "mood", "hydration", "sleep", "activity"
+            "snack_description", "hydration", "sleep", "activity", "alcohol",
+            "caffeine", "marijuana", "exercise_type", "supplements"
         ]
         
-        is_meaningful = any(
-            result.get(field) and str(result.get(field)).strip() and 
-            str(result.get(field)).strip() not in ["-", "n/a", "none", "null"]
+        # Check mood subfields
+        mood_data = fields.get("mood", {})
+        has_mood = any(mood_data.get(time) for time in ["morning", "afternoon", "night"])
+        
+        is_meaningful = has_mood or any(
+            fields.get(field) and str(fields.get(field)).strip() and 
+            str(fields.get(field)).strip() not in ["-", "n/a", "none", "null"]
             for field in meaningful_fields
         )
         
-        return result, is_meaningful
+        # Flatten the structure for backward compatibility with existing code
+        flattened_result = {
+            "date": result["date"],
+            "timestamp": result["timestamp"]
+        }
+        
+        # Add all fields from the nested structure to the flat structure
+        for key, value in fields.items():
+            if key == "mood" and isinstance(value, dict):
+                # Split mood into separate time-based fields
+                flattened_result["mood_morning"] = value.get("morning", "")
+                flattened_result["mood_afternoon"] = value.get("afternoon", "")
+                flattened_result["mood_night"] = value.get("night", "")
+            elif key == "supplements" and isinstance(value, list):
+                # Store supplements as JSON string
+                flattened_result["supplements"] = json.dumps(value) if value else "[]"
+            else:
+                flattened_result[key] = value
+        
+        return flattened_result, is_meaningful
     except json.JSONDecodeError:
         raise ValueError("Failed to parse Claude's response as JSON")

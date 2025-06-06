@@ -82,7 +82,7 @@ async def view_raw_logs(format: str = "download"):
 async def get_recent_activity():
     """Get recent raw messages and today's aggregated data for the UI"""
     import csv
-    from datetime import datetime
+    from datetime import datetime, timedelta
     from services.raw_logger import get_raw_logs_path
     from services.daily_logs_manager import get_daily_logs_for_api
     
@@ -111,8 +111,42 @@ async def get_recent_activity():
     daily_logs = get_daily_logs_for_api()
     today_log = next((log for log in daily_logs if log.get("date") == today), None)
     
+    # Calculate activity streak
+    def calculate_streak(logs):
+        if not logs:
+            return 0
+        
+        # Sort logs by date in descending order
+        sorted_logs = sorted(logs, key=lambda x: x.get("date", ""), reverse=True)
+        
+        streak = 0
+        current_date = datetime.now().date()
+        
+        for log in sorted_logs:
+            log_date_str = log.get("date")
+            if not log_date_str:
+                continue
+                
+            try:
+                log_date = datetime.strptime(log_date_str, "%Y-%m-%d").date()
+                
+                # If this is today or the expected previous day, count it
+                if log_date == current_date or (streak > 0 and log_date == current_date - timedelta(days=1)):
+                    streak += 1
+                    current_date = log_date
+                else:
+                    # Streak is broken
+                    break
+            except ValueError:
+                continue
+        
+        return streak
+    
+    activity_streak = calculate_streak(daily_logs)
+    
     return {
         "recent_messages": recent_messages,
         "today_log": today_log,
-        "daily_logs": daily_logs
+        "daily_logs": daily_logs,
+        "activity_streak": activity_streak
     }

@@ -11,6 +11,7 @@ function App() {
   const [logs, setLogs] = useState([])
   const [recentActivity, setRecentActivity] = useState({ recent_messages: [], today_log: null, daily_logs: [] })
   const [loading, setLoading] = useState(false)
+  const [lastLoadedDate, setLastLoadedDate] = useState(new Date().toDateString())
 
   const loadLogs = async () => {
     try {
@@ -39,7 +40,23 @@ function App() {
   useEffect(() => {
     loadLogs()
     loadRecentActivity()
-  }, [])
+    
+    // Check for date changes every minute
+    const checkDateChange = () => {
+      const currentDate = new Date().toDateString()
+      if (currentDate !== lastLoadedDate) {
+        console.log('New day detected, refreshing data...')
+        setLastLoadedDate(currentDate)
+        loadLogs()
+        loadRecentActivity()
+      }
+    }
+    
+    // Check immediately and then every minute
+    const intervalId = setInterval(checkDateChange, 60000) // Check every minute
+    
+    return () => clearInterval(intervalId)
+  }, [lastLoadedDate])
 
   const handleLogSubmit = async (input) => {
     setLoading(true)
@@ -59,6 +76,7 @@ function App() {
       const result = await response.json()
       await loadLogs()
       await loadRecentActivity()
+      setLastLoadedDate(new Date().toDateString()) // Update last loaded date
       return { success: true, data: result }
     } catch (error) {
       return { success: false, error: error.message }
@@ -74,7 +92,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
+        <Navbar activityStreak={recentActivity.activity_streak || 0} />
         <Routes>
           <Route 
             path="/" 
